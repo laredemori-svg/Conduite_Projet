@@ -51,41 +51,6 @@ def react(emotion, confidence):
 
     return action, message
 
-"""
-def main():
-    global current_state
-
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-
-        data = json.loads(line)
-
-        emotion = data.get("emotion", "")
-        confidence = data.get("confidence", "")
-
-        action, message = react(emotion, confidence)
-
-        if current_state != "END":
-            if action == "offer_support":
-                current_state = "SUPPORT"
-            elif action == "de_escalate":
-                current_state = "DEESCALATE"
-            elif action == "suggest_pause":
-                current_state = "END"
-        else :
-            current_state = "END"
-
-        output = {
-            "action": action,
-            "message": message,
-            "next_state": current_state
-        }
-
-        print(json.dumps(output, ensure_ascii=False))
-
-"""
 def main():
     global current_state
     nom_fichier = "action_message_users.json"
@@ -121,12 +86,17 @@ def main():
                         "next_state": current_state
                     }
 
-                    # 4. On affiche le résultat
-                    print(json.dumps(output, ensure_ascii=False))
 
                 except json.JSONDecodeError:
-                    print(f"Saut d'une ligne mal formante dans {nom_fichier}")
-                    continue
+                    output = {
+                        "action": "ask_clarification",
+                        "message": "Je capte pas trop, tu peux reformuler pour me help ?",
+                        "next_state": current_state
+                    }
+                
+                
+                print(json.dumps(output, ensure_ascii=False))
+                continue
 
     except FileNotFoundError:
         print(f"Erreur : Le fichier '{nom_fichier}' est introuvable dans le dossier.")
